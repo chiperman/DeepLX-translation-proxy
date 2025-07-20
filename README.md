@@ -53,13 +53,17 @@ If the request fails, the server-side API key is not configured, or input valida
 
 To function correctly, the server requires the following environment variables. You can set these variables in your deployment environment, or by creating a `.env` file in the project root:
 
-- `DEEPLX_API_KEY`: Your secret DeepLX API key.
+* `DEEPLX_API_KEY`: Your secret DeepLX API key.
   ```
   DEEPLX_API_KEY=your_secret_deeplx_api_key
   ```
-- `ALLOWED_ORIGINS`: A comma-separated list of allowed CORS origins (e.g., `https://example.com,http://localhost:8080`).
+* `ALLOWED_ORIGINS`: A comma-separated list of allowed CORS origins (e.g., `https://example.com,http://localhost:8080`).
   ```
   ALLOWED_ORIGINS=https://example.com,http://localhost:3000
+  ```
+* `RATE_LIMIT_MAX`: (Optional) The maximum number of requests allowed per IP per 15 minutes. Default is 100 if not set.
+  ```
+  RATE_LIMIT_MAX=200
   ```
 
 ## Running Locally
