@@ -5,7 +5,11 @@ const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
+
+// 让 express-rate-limit 能正确识别真实 IP（适用于 Vercel、代理等环境）
+app.set('trust proxy', 1);
 
 // 从环境变量中读取配置
 const DEEPLX_API_KEY = process.env.DEEPLX_API_KEY;
@@ -24,11 +28,18 @@ const corsOptions = {
 };
 
 // 配置速率限制
+const RATE_LIMIT_MAX = process.env.RATE_LIMIT_MAX ? parseInt(process.env.RATE_LIMIT_MAX, 10) : 100;
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 分钟
-  max: 100, // 每个 IP 每 15 分钟最多 100 个请求
+  max: RATE_LIMIT_MAX, // 每个 IP 每 15 分钟最多 RATE_LIMIT_MAX 个请求
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Too many requests, please try again later.',
+      details: `Rate limit exceeded. Each IP is allowed ${RATE_LIMIT_MAX} requests per 15 minutes.`,
+    });
+  },
 });
 
 // 应用中间件
