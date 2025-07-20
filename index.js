@@ -14,7 +14,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS;
 // 配置 CORS
 const corsOptions = {
   origin: (origin, callback) => {
-    const originList = ALLOWED_ORIGINS.split(',').map(item => item.trim());
+    const originList = ALLOWED_ORIGINS.split(',').map((item) => item.trim());
     if (!origin || originList.includes(origin)) {
       callback(null, true);
     } else {
@@ -39,8 +39,14 @@ app.use(limiter);
 // 输入验证规则
 const translateValidationRules = [
   body('text').isString().notEmpty().withMessage('Text must be a non-empty string.'),
-  body('source_lang').isString().notEmpty().withMessage('Source language must be a non-empty string.'),
-  body('target_lang').isString().notEmpty().withMessage('Target language must be a non-empty string.'),
+  body('source_lang')
+    .isString()
+    .notEmpty()
+    .withMessage('Source language must be a non-empty string.'),
+  body('target_lang')
+    .isString()
+    .notEmpty()
+    .withMessage('Target language must be a non-empty string.'),
 ];
 
 // 翻译路由
@@ -74,9 +80,9 @@ app.post('/translate', translateValidationRules, async (req, res) => {
 
     if (!response.ok) {
       // 将 DeepLX API 的错误信息和状态码转发给客户端
-      return res.status(response.status).json({ 
+      return res.status(response.status).json({
         error: 'Failed to fetch translation from DeepLX.',
-        details: data 
+        details: data,
       });
     }
 
